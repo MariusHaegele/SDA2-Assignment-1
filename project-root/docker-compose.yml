@@ -1,0 +1,75 @@
+version: '3'
+
+services:
+  ticket_system:
+    build:
+      context: ./services/ticket_system
+      dockerfile: Dockerfile.dockerfile
+    image: ticket_system
+    container_name: ticket_system
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - OPENFAAS_URL=http://167.71.46.254:8080/function/ticket-counter-Gruppe-D
+    networks:
+      - faas_network
+    depends_on:
+      - customer_info
+      - employee_info
+
+  customer_info:
+    build:
+      context: ./services/customer_info
+      dockerfile: Dockerfile.dockerfile
+    image: customer_info
+    container_name: customer_info
+    ports:
+      - "8081:8081"
+    environment:
+      - PORT=8081
+    networks:
+      - faas_network
+
+  employee_info:
+    build:
+      context: ./services/employee_info
+      dockerfile: Dockerfile.dockerfile
+    image: employee_info
+    container_name: employee_info
+    ports:
+      - "8082:8082"
+    environment:
+      - PORT=8082
+    networks:
+      - faas_network
+
+  orders_ticket:
+    build:
+      context: ./services/orders_ticket
+      dockerfile: Dockerfile.dockerfile
+    image: orders_ticket
+    container_name: orders_ticket
+    ports:
+      - "8083:8083"
+    environment:
+      - PORT=8083
+    networks:
+      - faas_network
+
+  vendorinfo:
+    build:
+      context: ./services/vendorinfo
+      dockerfile: Dockerfile.dockerfile
+    image: vendorinfo
+    container_name: vendorinfo
+    ports:
+      - "8084:8084"
+    environment:
+      - PORT=8084
+    networks:
+      - faas_network
+
+networks:
+  faas_network:
+    driver: bridge
